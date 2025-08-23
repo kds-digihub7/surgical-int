@@ -59,7 +59,10 @@ function Navbar() {
               >
                 {item.name}
                 {location.pathname === item.path && (
-                  <motion.div className="nav-indicator" layoutId="nav-indicator" />
+                  <motion.div
+                    className="nav-indicator"
+                    layoutId="nav-indicator"
+                  />
                 )}
               </Link>
             </motion.li>

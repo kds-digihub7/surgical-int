@@ -1,11 +1,12 @@
 // src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
 import { motion } from "framer-motion";
 import { ArrowRight, Quote, Scissors, Activity, Heart, Phone, Star, Shield, Truck, Award, Users, Globe } from "lucide-react";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate(); // Added for programmatic navigation
 
   // load products (images) from localStorage if present; fallback to logo placeholders
   useEffect(() => {
@@ -22,6 +23,15 @@ export default function Home() {
       setProducts([{ id: 1, image: "/logo.png" }, { id: 2, image: "/logo.png" }, { id: 3, image: "/logo.png" }]);
     }
   }, []);
+
+  // Added click handlers for buttons as fallback
+  const handleContactClick = () => {
+    navigate("/contact");
+  };
+
+  const handleCatalogueClick = () => {
+    navigate("/catalogue");
+  };
 
   const featuredImages = products.length ? products.map((p) => p.image) : ["/logo.png", "/logo.png", "/logo.png"];
   const duplicatedImages = [...featuredImages, ...featuredImages];
@@ -69,6 +79,7 @@ export default function Home() {
         transition={{ delay: 0.5 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        onClick={handleContactClick} // Added onClick as fallback
       >
         <div className="pulse-dot"></div>
         <Phone size={18} />
@@ -105,12 +116,12 @@ export default function Home() {
 
             <div className="hero-ctas">
               <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
-                <Link to="/catalogue" className="btn btn-primary">
+                <Link to="/catalogue" className="btn btn-primary" onClick={handleCatalogueClick}>
                   Explore Products <ArrowRight size={16} />
                 </Link>
               </motion.div>
               <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
-                <Link to="/contact" className="btn btn-outline">
+                <Link to="/contact" className="btn btn-outline" onClick={handleContactClick}>
                   Contact Us
                 </Link>
               </motion.div>
@@ -230,7 +241,9 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Link to="/catalogue" className="btn btn-primary btn-large">View Full Catalogue</Link>
+            <Link to="/catalogue" className="btn btn-primary btn-large" onClick={handleCatalogueClick}>
+              View Full Catalogue
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -297,10 +310,14 @@ export default function Home() {
             <p>Contact us today to discuss your instrument needs or request a customized quote</p>
             <div className="cta-buttons">
               <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
-                <Link to="/contact" className="btn btn-primary btn-large">Request a Quote</Link>
+                <Link to="/contact" className="btn btn-primary btn-large" onClick={handleContactClick}>
+                  Request a Quote
+                </Link>
               </motion.div>
               <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
-                <Link to="/catalogue" className="btn btn-outline btn-large">Browse Catalogue</Link>
+                <Link to="/catalogue" className="btn btn-outline btn-large" onClick={handleCatalogueClick}>
+                  Browse Catalogue
+                </Link>
               </motion.div>
             </div>
           </motion.div>
@@ -349,6 +366,7 @@ export default function Home() {
           z-index: 999; 
           box-shadow: var(--shadow-hover);
           transition: var(--transition);
+          cursor: pointer;
         }
         .sticky-cta:hover {
           background: var(--accent-dark);
@@ -628,7 +646,7 @@ export default function Home() {
         .carousel-item { 
           flex: 0 0 auto; 
           width: 320px; 
-          height: 220px; 
+  height: 220px; 
           border-radius: var(--border-radius); 
           overflow: hidden; 
           box-shadow: var(--shadow); 
@@ -782,6 +800,8 @@ export default function Home() {
           background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
           background-size: 40px 40px;
           opacity: 0.3;
+          z-index: -1;              /* push background behind content */
+          pointer-events: none;     /* prevent blocking clicks */
         }
         .cta-content h2 { 
           font-size: 2.2rem; 

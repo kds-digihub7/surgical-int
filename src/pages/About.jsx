@@ -49,19 +49,6 @@ export default function About() {
 
   return (
     <div className="about-page">
-      {/* HERO */}
-      <header className="about-hero">
-        <div className="container hero-inner">
-          <motion.div initial="hidden" animate="visible" variants={fade} className="hero-text">
-            <motion.h1 variants={fadeUp} className="hero-title">
-              About Subhan International
-            </motion.h1>
-            <motion.p variants={fade} className="hero-subtitle">
-              Excellence in surgical instrumentation for over two decades.
-            </motion.p>
-          </motion.div>
-        </div>
-      </header>
 
       {/* ABOUT MAIN: text + features + illustrative image */}
       <main className="about-main">
@@ -155,7 +142,7 @@ export default function About() {
       </section>
 
       {/* DETAILED SECTIONS: Our Story, Mission, Quality, Global Presence */}
-      <section className="detailed-sections" aria-labelledby="sections-heading">
+      {/* <section className="detailed-sections" aria-labelledby="sections-heading">
         <div className="container">
           <h3 id="sections-heading" className="sections-title">What We Do</h3>
           <div className="sections-grid">
@@ -167,7 +154,7 @@ export default function About() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* small CTA band */}
       <section className="about-cta">
