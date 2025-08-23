@@ -51,7 +51,7 @@ export default function About() {
     <div className="about-page">
 
       {/* ABOUT MAIN: text + features + illustrative image */}
-      <main className="about-main">
+      <main className="about-main" gap-5>
         <div className="container">
           <motion.div
             className="about-content"
@@ -182,7 +182,7 @@ export default function About() {
           --card-border: #e6eef8;
         }
         .container{ max-width:1160px; margin:0 auto; padding:0 20px; }
-        .about-page{ font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color: #0f1724; background: var(--bg); }
+        .about-page{ font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;  color: #0f1724; background: var(--bg); }
 
         /* HERO */
         .about-hero{ background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white; padding:72px 0 48px; text-align:center; }
@@ -191,7 +191,7 @@ export default function About() {
         .hero-subtitle{ margin:0; color: rgba(255,255,255,0.95); font-weight:500; max-width:800px; }
 
         /* ABOUT MAIN */
-        .about-main{ padding:56px 0; }
+        .about-main{ margin-top: calc(var(--nav-height) + 16px); padding:56px 0;}
         .about-content{ display:flex; gap:48px; align-items:start; justify-content:space-between; }
         @media (max-width: 1024px){ .about-content{ flex-direction:column-reverse; gap:26px; } }
 
