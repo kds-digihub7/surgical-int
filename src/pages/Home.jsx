@@ -1,815 +1,859 @@
 // src/pages/Home.jsx
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check, Globe, Truck, ChevronLeft, ChevronRight, Users, Award, Heart } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Quote, Scissors, Activity, Heart, Phone, Star, Shield, Truck, Award, Users, Globe } from "lucide-react";
 
-function Home() {
+export default function Home() {
   const [products, setProducts] = useState([]);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const autoplayRef = useRef(null);
 
-  // Enhanced slider slides with more details and visual elements
-  const slides = [
-    {
-      id: 1,
-      title: "Precision Instruments",
-      subtitle: "Designed for accuracy and longevity in critical procedures.",
-      description: "Crafted with attention to detail for optimal surgical outcomes.",
-      color: "#E8F6FF",
-      textColor: "#0F1724",
-      icon: <Check size={32} />,
-      cta: "Browse Instruments",
-      link: "/catalogue"
-    },
-    {
-      id: 2,
-      title: "Sterile & Reliable",
-      subtitle: "Manufactured under strict quality control standards.",
-      description: "Each instrument undergoes rigorous testing and sterilization.",
-      color: "#EFFCF6",
-      textColor: "#064E3B",
-      icon: <Truck size={32} />,
-      cta: "Quality Standards",
-      link: "/catalogue"
-    },
-    {
-      id: 3,
-      title: "Global Delivery",
-      subtitle: "Trusted by clinics and hospitals worldwide.",
-      description: "Fast, reliable shipping to medical facilities across the globe.",
-      color: "#FFF7ED",
-      textColor: "#7C2D12",
-      icon: <Globe size={32} />,
-      cta: "Shipping Info",
-      link: "/catalogue"
-    },
-  ];
-
+  // load products (images) from localStorage if present; fallback to logo placeholders
   useEffect(() => {
     document.title = "Subhan International | Premium Surgical Instruments";
-
-    // Load products from localStorage (if any)
     try {
-      const savedProducts = JSON.parse(localStorage.getItem("products")) || [];
-      setProducts(savedProducts);
-    } catch (err) {
-      setProducts([]);
+      const saved = JSON.parse(localStorage.getItem("products")) || [];
+      const prepared = saved.map((p) => ({
+        id: p.id ?? Math.random(),
+        image: p.image || "/logo.png",
+        name: p.name || "Product",
+      }));
+      setProducts(prepared.length ? prepared : [{ id: 1, image: "/logo.png" }, { id: 2, image: "/logo.png" }, { id: 3, image: "/logo.png" }]);
+    } catch {
+      setProducts([{ id: 1, image: "/logo.png" }, { id: 2, image: "/logo.png" }, { id: 3, image: "/logo.png" }]);
     }
   }, []);
 
-  // autoplay with cleanup
-  useEffect(() => {
-    startAutoplay();
-    return () => stopAutoplay();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slideIndex, isHovering]);
+  const featuredImages = products.length ? products.map((p) => p.image) : ["/logo.png", "/logo.png", "/logo.png"];
+  const duplicatedImages = [...featuredImages, ...featuredImages];
 
-  const startAutoplay = () => {
-    stopAutoplay();
-    if (!isHovering) {
-      autoplayRef.current = setInterval(() => {
-        setSlideIndex((s) => (s + 1) % slides.length);
-      }, 5000);
-    }
-  };
+  const testimonials = [
+    {
+      name: "Dr. Ahmed",
+      role: "Chief Surgeon",
+      text: "Excellent instruments, fast delivery and superb support. The precision tools have improved our surgical outcomes significantly.",
+      avatar: "/logo.png",
+      rating: 5
+    },
+    {
+      name: "MediCare Clinic",
+      role: "Medical Director",
+      text: "Top quality, precise tools we rely on for surgeries. Their instruments have never failed us in critical procedures.",
+      avatar: "/logo.png",
+      rating: 5
+    },
+    {
+      name: "Surgical House",
+      role: "Procurement Manager",
+      text: "Highly recommended — consistent, reliable instruments. Their customer service is as exceptional as their products.",
+      avatar: "/logo.png",
+      rating: 4
+    },
+  ];
 
-  const stopAutoplay = () => {
-    if (autoplayRef.current) {
-      clearInterval(autoplayRef.current);
-      autoplayRef.current = null;
-    }
-  };
-
-  const goPrev = () => setSlideIndex((s) => (s - 1 + slides.length) % slides.length);
-  const goNext = () => setSlideIndex((s) => (s + 1) % slides.length);
-  const goTo = (i) => setSlideIndex(i);
-
-  // Progress bar component
-  const ProgressBar = ({ index, active }) => {
-    const [progress, setProgress] = useState(0);
-    
-    useEffect(() => {
-      if (active) {
-        setProgress(0);
-        const interval = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 100) {
-              clearInterval(interval);
-              return 100;
-            }
-            return prev + 100 / (5000 / 50); // 5000ms divided by 50ms intervals
-          });
-        }, 50);
-        
-        return () => clearInterval(interval);
-      } else {
-        setProgress(0);
-      }
-    }, [active, index]);
-    
-    return (
-      <div className="progress-bar">
-        <motion.div 
-          className="progress-fill"
-          initial={{ width: "0%" }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.1 }}
-        />
-      </div>
-    );
-  };
+  const features = [
+    { icon: <Shield size={24} />, title: "Quality Certified", description: "ISO 9001 certified manufacturing process" },
+    { icon: <Globe size={24} />, title: "Global Delivery", description: "Fast shipping to medical facilities worldwide" },
+    { icon: <Award size={24} />, title: "Premium Materials", description: "Medical-grade stainless steel instruments" },
+    { icon: <Users size={24} />, title: "Expert Support", description: "Technical assistance from medical professionals" },
+  ];
 
   return (
     <div className="home-page">
-      {/* HERO SECTION WITH SLIDER */}
-      <section className="hero">
-        <div className="container">
-          <motion.h1
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="hero-title"
-          >
-            Precision Surgical Instruments for Medical Excellence
-          </motion.h1>
+      {/* sticky CTA */}
+      <motion.a
+        href="/contact"
+        className="sticky-cta"
+        aria-label="Contact us"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <div className="pulse-dot"></div>
+        <Phone size={18} />
+        <span>Get Quote</span>
+      </motion.a>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="hero-sub"
-          >
-            Subhan International provides the highest quality surgical instruments to medical
-            professionals worldwide, ensuring precision, reliability, and exceptional performance in
-            every procedure.
-          </motion.p>
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-background">
+          <div className="hero-bg-pattern"></div>
+        </div>
+
+        <div className="container hero-container">
+          <div className="hero-content">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="hero-title"
+            >
+              <span className="base-text">Precision Surgical Instruments</span>{" "}
+              <span className="gradient-text">for Medical Excellence</span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              className="hero-sub"
+            >
+              Subhan International provides the highest quality surgical instruments to medical professionals worldwide,
+              ensuring precision, reliability, and exceptional performance in every procedure.
+            </motion.p>
+
+            <div className="hero-ctas">
+              <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
+                <Link to="/catalogue" className="btn btn-primary">
+                  Explore Products <ArrowRight size={16} />
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
+                <Link to="/contact" className="btn btn-outline">
+                  Contact Us
+                </Link>
+              </motion.div>
+            </div>
+
+            <div className="trust-indicators" aria-hidden>
+              <div className="trust-item">
+                <div className="trust-icon"><Activity size={14} /></div>
+                <span>ISO 9001 Certified</span>
+              </div>
+              <div className="trust-item">
+                <div className="trust-icon"><Heart size={14} /></div>
+                <span>Patient Safety First</span>
+              </div>
+              <div className="trust-item">
+                <div className="trust-icon"><Truck size={14} /></div>
+                <span>Worldwide Delivery</span>
+              </div>
+            </div>
+          </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="hero-actions"
+            className="hero-visual"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
           >
-            <Link to="/catalogue" className="btn btn-primary explore-btn">
-              <span className="explore-text">Explore Products</span>
-              <ArrowRight size={23} className="explore-arrow" />
-            </Link>
-
-            <Link to="/contact" className="btn btn-outline">
-              Contact Us
-            </Link>
+            <div className="logo-container">
+              <div className="logo-glow"></div>
+              <img src="/logo.png" alt="Subhan International" className="hero-logo" />
+            </div>
           </motion.div>
+        </div>
 
-          {/* --- ENHANCED SLIDER START --- */}
-          <div
-            className="hero-slider"
-            onMouseEnter={() => {
-              setIsHovering(true);
-              stopAutoplay();
-            }}
-            onMouseLeave={() => {
-              setIsHovering(false);
-              startAutoplay();
-            }}
-          >
-            {/* slides area */}
-            <div className="slider-viewport" role="region" aria-roledescription="carousel" aria-label="Highlights">
-              <AnimatePresence initial={false} mode="wait">
-                {slides.map((slide, idx) =>
-                  idx === slideIndex ? (
-                    <motion.div
-                      key={slide.id}
-                      className="slide"
-                      initial={{ opacity: 0, x: 100, scale: 0.95 }}
-                      animate={{ opacity: 1, x: 0, scale: 1 }}
-                      exit={{ opacity: 0, x: -100, scale: 1.05 }}
-                      transition={{ duration: 0.7, ease: "easeInOut" }}
-                      style={{ background: slide.color }}
-                      aria-live="polite"
-                    >
-                      <div className="slide-content" style={{ color: slide.textColor }}>
-                        <motion.div 
-                          className="slide-icon"
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
-                        >
-                          {slide.icon}
-                        </motion.div>
-                        <div className="slide-text-content">
-                          <motion.h3 
-                            className="slide-title"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                          >
-                            {slide.title}
-                          </motion.h3>
-                          <motion.p 
-                            className="slide-sub"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                          >
-                            {slide.subtitle}
-                          </motion.p>
-                          <motion.p 
-                            className="slide-desc"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                          >
-                            {slide.description}
-                          </motion.p>
-                          <motion.div 
-                            className="slide-cta"
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.6 }}
-                          >
-                            <Link to={slide.link} className="btn btn-small">{slide.cta}</Link>
-                          </motion.div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ) : null
-                )}
-              </AnimatePresence>
-
-              {/* controls */}
-              <motion.button 
-                className="slider-btn prev" 
-                onClick={goPrev} 
-                aria-label="Previous slide"
-                whileHover={{ scale: 1.1, backgroundColor: "rgba(0,0,0,0.1)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <ChevronLeft size={24} />
-              </motion.button>
-              <motion.button 
-                className="slider-btn next" 
-                onClick={goNext} 
-                aria-label="Next slide"
-                whileHover={{ scale: 1.1, backgroundColor: "rgba(0,0,0,0.1)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <ChevronRight size={24} />
-              </motion.button>
-              
-              {/* Progress indicator for current slide */}
-              <div className="slide-progress">
-                <ProgressBar index={slideIndex} active={!isHovering} />
-              </div>
-            </div>
-
-            {/* dots with numbers */}
-            <div className="slider-dots" role="tablist" aria-label="Slide navigation">
-              {slides.map((slide, i) => (
-                <button
-                  key={i}
-                  className={`dot ${i === slideIndex ? "active" : ""}`}
-                  onClick={() => goTo(i)}
-                  aria-label={`Go to slide ${i + 1}: ${slide.title}`}
-                  role="tab"
-                  aria-selected={i === slideIndex}
-                >
-                  <span className="dot-number">{i + 1}</span>
-                  <span className="dot-title">{slide.title}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-          {/* --- ENHANCED SLIDER END --- */}
+        <div className="hero-scroll-indicator">
+          <div className="scroll-line"></div>
+          <span>Scroll to explore</span>
         </div>
       </section>
 
-      {/* ABOUT SECTION */}
-      <section className="about-section">
+      {/* Features Section */}
+      <section className="section features-section">
         <div className="container">
-          <div className="about-content">
-            <div className="about-text">
-              <h2>Subhan International</h2>
-              <p>
-                With over two decades of experience, Subhan International has established itself as a 
-                trusted provider of high-quality surgical instruments to medical professionals worldwide. 
-                Our commitment to excellence, precision, and reliability has made us a preferred partner 
-                for hospitals, clinics, and healthcare institutions.
-              </p>
-              <div className="about-features">
-                <div className="feature">
-                  <Award size={32} className="feature-icon" />
-                  <h3>Quality Certified</h3>
-                  <p>All our products meet international quality standards and certifications.</p>
+          <motion.h2
+            className="section-title"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Why Choose Subhan International
+          </motion.h2>
+
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="feature-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="feature-icon">
+                  {feature.icon}
                 </div>
-                <div className="feature">
-                  <Users size={32} className="feature-icon" />
-                  <h3>Expert Team</h3>
-                  <p>Our team includes experienced professionals with medical and engineering backgrounds.</p>
-                </div>
-                <div className="feature">
-                  <Heart size={32} className="feature-icon" />
-                  <h3>Patient Safety</h3>
-                  <p>We prioritize instruments that ensure patient safety and surgical success.</p>
-                </div>
-              </div>
-              <Link to="/about" className="btn btn-primary">Learn More About Us</Link>
-            </div>
-            <div className="about-image">
-              <div className="image-placeholder">
-                <span>Surgical Instruments Image</span>
-              </div>
-            </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* Featured products -> image-only auto-scrolling carousel */}
+      <section className="section featured-section">
+        <div className="container">
+          <motion.h2
+            className="section-title"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Featured Products
+          </motion.h2>
+          <motion.p
+            className="section-subtitle"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            Swipe or hover to pause — images auto-scroll
+          </motion.p>
+
+          <div className="featured-carousel-wrapper">
+            <div className="featured-carousel" aria-hidden>
+              <div className="carousel-track">
+                {duplicatedImages.map((src, idx) => (
+                  <div className="carousel-item" key={`${src}-${idx}`}>
+                    <div className="carousel-item-inner">
+                      <img src={src} alt={`Featured ${idx}`} loading="lazy" />
+                      <div className="carousel-overlay">
+                        <button className="quick-view-btn">Quick View</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="carousel-gradient-left"></div>
+            <div className="carousel-gradient-right"></div>
+          </div>
+
+          <motion.div
+            style={{ textAlign: "center", marginTop: 40 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Link to="/catalogue" className="btn btn-primary btn-large">View Full Catalogue</Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="testimonials">
+        <div className="container">
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="section-title"
+          >
+            Trusted by Medical Professionals
+          </motion.h3>
+
+          <div className="testi-wrap">
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={i}
+                className="testi-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -5 }}
+              >
+                <div className="testi-rating">
+                  {[...Array(5)].map((_, starIdx) => (
+                    <Star
+                      key={starIdx}
+                      size={14}
+                      fill={starIdx < t.rating ? "#F59E0B" : "none"}
+                      color="#F59E0B"
+                    />
+                  ))}
+                </div>
+                <div className="testi-icon"><Quote size={18} /></div>
+                <p>"{t.text}"</p>
+                <div className="testi-author">
+                  <img src={t.avatar} alt={t.name} className="testi-avatar" />
+                  <div>
+                    <div className="testi-name">{t.name}</div>
+                    <div className="testi-role">{t.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="cta-section">
+        <div className="cta-background"></div>
+        <div className="container">
+          <motion.div
+            className="cta-content"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2>Ready to Elevate Your Surgical Practice?</h2>
+            <p>Contact us today to discuss your instrument needs or request a customized quote</p>
+            <div className="cta-buttons">
+              <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
+                <Link to="/contact" className="btn btn-primary btn-large">Request a Quote</Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -3 }} whileTap={{ y: 0 }}>
+                <Link to="/catalogue" className="btn btn-outline btn-large">Browse Catalogue</Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Inline styles */}
       <style>{`
-        /* Reset and base styles */
-        .home-page {
-          position: relative;
-          width: 100%;
-          overflow-x: hidden;
-        }
-        
         :root {
-          --text: #0F1724;
-          --accent: #3B82F6;
-          --accent-dark: #2563EB;
+          --text: #0F172A;
+          --accent: #2563EB;
+          --accent-dark: #1E40AF;
+          --accent-light: #DBEAFE;
           --bg: #FFFFFF;
-          --card: #F1F5F9;
           --muted: #64748B;
-          --card-border: #E6EEF8;
-          --nav-height: 70px;
+          --nav-height: 80px;
+          --border-radius: 16px;
+          --shadow: 0 8px 30px rgba(2,6,23,0.06);
+          --shadow-hover: 0 20px 50px rgba(2,6,23,0.1);
+          --transition: all 0.3s ease;
         }
-
-        .container {
-          max-width: 1160px;
-          margin: 0 auto;
-          padding: 0 20px;
-        }
-
-        .hero {
-          padding: calc(var(--nav-height) + 40px) 0 28px;
-          text-align: center;
-          background: var(--bg);
-          position: relative;
-          z-index: 1;
-        }
-        .hero-title { 
-          font-size: 2.5rem; 
-          line-height: 1.1; 
-          margin: 0 0 12px; 
-          color: var(--text); 
-          font-weight: 800; 
-          letter-spacing: -0.5px;
-        }
-        .hero-sub { 
-          max-width: 900px; 
-          margin: 0 auto 18px; 
-          color: var(--muted); 
-          font-size: 1.05rem; 
+        * { box-sizing: border-box; }
+        body { 
+          font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; 
+          color:var(--text); 
+          background:var(--bg); 
           line-height:1.6; 
+          scroll-behavior: smooth;
         }
 
-        .hero-actions { 
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .sticky-cta {
+          position: fixed; 
+          right: 20px; 
+          bottom: 20px; 
+          background: var(--accent); 
+          color: #fff; 
+          padding: 12px 20px; 
+          border-radius: 50px;
+          font-weight: 700; 
+          text-decoration: none; 
           display:flex; 
-          gap:18px; 
-          justify-content:center; 
-          margin-bottom: 22px; 
+          align-items:center; 
+          gap:8px; 
+          z-index: 999; 
+          box-shadow: var(--shadow-hover);
+          transition: var(--transition);
         }
-
-        .btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-weight: 600;
-          text-decoration: none;
-          transition: all 0.2s ease;
-          border: 2px solid transparent;
-        }
-
-        .btn-primary {
-          background: var(--accent);
-          color: white;
-        }
-
-        .btn-primary:hover {
+        .sticky-cta:hover {
           background: var(--accent-dark);
-          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        .pulse-dot {
+          position: absolute;
+          top: -5px;
+          right: -5px;
+          width: 12px;
+          height: 12px;
+          background: #EF4444;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
         }
 
-        .btn-outline {
-          background: transparent;
-          color: var(--accent);
-          border-color: var(--accent);
+        /* HERO */
+        .hero { 
+          padding: calc(var(--nav-height) + 20px) 0 60px; 
+          background: linear-gradient(135deg,#F8FAFC 0%,#F1F5F9 100%);
+          position: relative;
+          overflow: hidden;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
-
-        .btn-outline:hover {
-          background: var(--accent);
-          color: white;
+        .hero-background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 0;
         }
-
-        .explore-btn {
-          gap: 8px;
+        .hero-bg-pattern {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-image: radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px);
+          background-size: 30px 30px;
+          opacity: 0.5;
         }
-
-        /* --- ENHANCED SLIDER STYLES --- */
-        .hero-slider { 
-          margin: 18px auto 6px; 
-          max-width: 980px; 
-          width: 100%; 
+        .hero-container { 
+          display:flex; 
+          align-items:center; 
+          gap: 36px; 
           position: relative;
           z-index: 2;
         }
-        .slider-viewport { 
-          position: relative; 
-          overflow: hidden; 
-          border-radius: 16px; 
-          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-          height: 220px; /* Reduced height */
-        }
-        .slide {
-          border-radius: 16px;
-          padding: 24px;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: absolute;
-          width: 100%;
-          top: 0;
-          left: 0;
-        }
-        .slide-content {
-          display: flex;
-          align-items: center;
-          width: 100%;
-          max-width: 900px;
-          margin: 0 auto;
-          gap: 20px;
-        }
-        .slide-icon {
-          margin-bottom: 0;
-          background: rgba(255,255,255,0.7);
-          padding: 12px;
-          border-radius: 12px;
-          display: inline-flex;
-          flex-shrink: 0;
-          z-index: 5; /* Ensure icon is above other elements */
-        }
-        .slide-text-content {
-          flex: 1;
-          text-align: left;
-        }
-        .slide-title { 
-          margin: 0 0 8px; 
-          font-size: 1.4rem; 
-          font-weight: 700; 
-          line-height: 1.2;
-        }
-        .slide-sub { 
-          margin: 0 0 8px; 
-          font-size: 1rem;
-          font-weight: 500;
-          opacity: 0.9;
-          line-height: 1.4;
-        }
-        .slide-desc {
-          margin: 0 0 16px;
-          opacity: 0.8;
-          max-width: 600px;
-          line-height: 1.5;
-          font-size: 0.9rem;
+        @media (max-width: 1024px) { 
+          .hero-container { 
+            flex-direction: column; 
+            text-align: center; 
+          } 
         }
 
-        .slide-cta { 
-          margin-top: 8px; 
+        .hero-content { flex: 1; max-width: 640px; }
+        .hero-title { 
+          font-size: 3rem; 
+          font-weight: 800; 
+          margin-bottom: 16px; 
+          line-height: 1.1; 
         }
-        .btn-small {
-          display:inline-flex; 
-          padding: 8px 16px; 
-          border-radius: 6px; 
-          background: rgba(255,255,255,0.9);
-          color: var(--text); 
-          font-weight:600; 
-          text-decoration:none;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-          transition: all 0.2s ease;
-          border: 1px solid rgba(255,255,255,0.5);
-          font-size: 0.9rem;
+        .hero-title .base-text { color: var(--text); font-weight: 800; }
+        .gradient-text { 
+          background: linear-gradient(135deg, var(--accent), var(--accent-dark)); 
+          -webkit-background-clip: text; 
+          -webkit-text-fill-color: transparent; 
+          background-clip: text; 
         }
-        .btn-small:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-          background: white;
-        }
-
-        /* arrow buttons */
-        .slider-btn {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          border: none;
-          background: rgba(255,255,255,0.9);
-          color: var(--text);
-          cursor: pointer;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 20px;
-          transition: all 0.2s ease;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-          z-index: 10;
-        }
-        .slider-btn:hover { 
-          background: white;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .slider-btn.prev { left: 15px; }
-        .slider-btn.next { right: 15px; }
-
-        /* Progress bar */
-        .slide-progress {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 3px;
-          background: rgba(0,0,0,0.1);
-          border-radius: 0 0 16px 16px;
-          overflow: hidden;
-        }
-        .progress-bar {
-          width: 100%;
-          height: 100%;
-          position: relative;
-        }
-        .progress-fill {
-          height: 100%;
-          background: var(--accent);
-          border-radius: 0 0 16px 16px;
+        .hero-sub { 
+          color: var(--muted); 
+          margin-bottom: 28px; 
+          font-size: 1.1rem; 
+          max-width: 90%;
         }
 
-        /* Enhanced dots with numbers and titles */
-        .slider-dots { 
+        .hero-ctas { 
           display:flex; 
           gap: 16px; 
-          justify-content:center; 
-          margin-top: 20px; 
+          margin-bottom: 28px; 
+          flex-wrap: wrap; 
         }
-        .dot { 
+        .btn { 
+          display:inline-flex; 
+          align-items:center; 
+          justify-content:center; 
+          padding:12px 24px; 
+          border-radius:12px; 
+          text-decoration:none; 
+          font-weight:700; 
+          border: 2px solid transparent; 
+          gap:8px; 
+          transition: var(--transition);
+          cursor: pointer;
+        }
+        .btn-primary { 
+          background: linear-gradient(135deg, var(--accent), var(--accent-dark)); 
+          color: white; 
+          box-shadow: var(--shadow); 
+        }
+        .btn-primary:hover { 
+          transform: translateY(-3px); 
+          box-shadow: var(--shadow-hover); 
+        }
+        .btn-outline { 
+          background: transparent; 
+          color: var(--accent); 
+          border-color: var(--accent); 
+        }
+        .btn-outline:hover { 
+          background: var(--accent); 
+          color: white; 
+        }
+        .btn-large {
+          padding: 16px 32px;
+          font-size: 1.05rem;
+        }
+
+        .trust-indicators { 
+          display:flex; 
+          gap:20px; 
+          margin-top:20px; 
+          color: var(--muted);
+          flex-wrap: wrap;
+        }
+        .trust-item { 
+          display:flex; 
+          align-items:center; 
+          gap:8px; 
+        }
+        .trust-icon { 
+          width:32px; 
+          height:32px; 
+          border-radius:50%; 
+          display:inline-flex; 
+          align-items:center; 
+          justify-content:center; 
+          background: var(--accent-light); 
+          color: var(--accent); 
+        }
+
+        .hero-visual { 
+          flex: 1; 
+          display:flex; 
+          align-items:center; 
+          justify-content:center; 
+          position: relative;
+        }
+        .logo-container { 
+          width: 280px; 
+          height: 280px; 
+          background: white; 
+          border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; 
+          display:flex; 
+          align-items:center; 
+          justify-content:center; 
+          box-shadow: var(--shadow);
+          position: relative;
+          animation: morphing 10s ease-in-out infinite;
+        }
+        .logo-glow {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          box-shadow: 0 0 40px rgba(37, 99, 235, 0.2);
+          animation: pulse 3s ease-in-out infinite alternate;
+        }
+        .hero-logo { 
+          max-width: 60%; 
+          max-height: 60%; 
+          object-fit: contain; 
+          z-index: 2;
+        }
+        
+        .hero-scroll-indicator {
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
           display: flex;
           flex-direction: column;
           align-items: center;
-          width: 50px;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0;
-          position: relative;
-        }
-        .dot-number {
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(15,23,36,0.1);
-          color: var(--text);
-          font-weight: 600;
-          transition: all 0.3s ease;
+          color: var(--muted);
           font-size: 0.8rem;
         }
-        .dot-title {
-          font-size: 0;
-          opacity: 0;
-          position: absolute;
-          top: 100%;
-          margin-top: 8px;
-          background: var(--text);
-          color: white;
-          padding: 4px 8px;
-          border-radius: 4px;
-          white-space: nowrap;
-          transition: all 0.3s ease;
-          font-weight: 500;
-        }
-        .dot:hover .dot-title {
-          font-size: 0.7rem;
-          opacity: 1;
-        }
-        .dot.active .dot-number {
+        .scroll-line {
+          width: 2px;
+          height: 40px;
           background: var(--accent);
-          color: white;
-          transform: scale(1.1);
+          margin-bottom: 8px;
+          animation: scrollLine 2s infinite;
         }
 
-        /* About Section */
-        .about-section {
-          padding: 60px 0;
-          background: #f8fafc;
+        /* Features Section */
+        .features-section {
+          padding: 80px 0;
+          background: #fff;
         }
-        .about-content {
-          display: flex;
-          gap: 40px;
-          align-items: center;
-        }
-        .about-text {
-          flex: 1;
-        }
-        .about-text h2 {
-          font-size: 2rem;
-          margin-bottom: 20px;
-          color: var(--text);
-        }
-        .about-text > p {
-          font-size: 1.1rem;
-          line-height: 1.6;
-          margin-bottom: 30px;
-          color: var(--muted);
-        }
-        .about-features {
+        .features-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-bottom: 30px;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 24px;
+          margin-top: 40px;
         }
-        .feature {
+        .feature-card {
+          background: #F8FAFC;
+          padding: 32px 24px;
+          border-radius: var(--border-radius);
           text-align: center;
-          padding: 20px;
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+          transition: var(--transition);
+        }
+        .feature-card:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--shadow);
         }
         .feature-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: var(--accent-light);
           color: var(--accent);
-          margin-bottom: 12px;
-        }
-        .feature h3 {
-          font-size: 1.1rem;
-          margin-bottom: 8px;
-          color: var(--text);
-        }
-        .feature p {
-          font-size: 0.9rem;
-          color: var(--muted);
-          line-height: 1.5;
-        }
-        .about-image {
-          flex: 1;
-        }
-        .image-placeholder {
-          height: 300px;
-          background: #e2e8f0;
-          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
+          margin: 0 auto 16px;
+        }
+        .feature-card h3 {
+          margin-bottom: 12px;
+          font-weight: 700;
+        }
+        .feature-card p {
           color: var(--muted);
         }
 
-        /* responsive */
-        @media (max-width: 980px) {
-          .slide { 
-            padding: 20px; 
-            height: 200px;
-          }
-          .slide-content {
-            gap: 15px;
-          }
-          .slider-btn { 
-            width:36px; 
-            height:36px; 
-          }
-          .slide-title { 
-            font-size: 1.2rem; 
-          }
-          .slide-sub, .slide-desc {
-            font-size: 0.9rem;
-          }
-          .about-content {
-            flex-direction: column;
-          }
-          .about-features {
-            grid-template-columns: 1fr;
-          }
+        /* Featured carousel */
+        .featured-section { 
+          padding: 80px 0; 
+          background: #F8FAFC;
+        }
+        .section-title { 
+          text-align:center; 
+          font-size:2.2rem; 
+          margin-bottom:12px; 
+          font-weight: 800;
+        }
+        .section-subtitle { 
+          text-align:center; 
+          color: var(--muted); 
+          margin-bottom: 40px; 
+          font-size: 1.1rem;
+        }
+        
+        .featured-carousel-wrapper {
+          position: relative;
+          margin: 0 auto;
+          max-width: 100%;
+          overflow: hidden;
+          border-radius: var(--border-radius);
+        }
+        .featured-carousel { 
+          overflow: hidden; 
+          padding: 16px 0; 
+          position: relative;
+        }
+        .carousel-track { 
+          display:flex; 
+          gap: 20px; 
+          align-items:center; 
+          animation: scroll-left 22s linear infinite; 
+        }
+        .carousel-track:hover { 
+          animation-play-state: paused; 
+        }
+        .carousel-item { 
+          flex: 0 0 auto; 
+          width: 320px; 
+          height: 220px; 
+          border-radius: var(--border-radius); 
+          overflow: hidden; 
+          box-shadow: var(--shadow); 
+          background: #fff;
+          position: relative;
+        }
+        .carousel-item-inner {
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+        .carousel-item img { 
+          width:100%; 
+          height:100%; 
+          object-fit: cover; 
+          display:block; 
+          transition: transform .35s ease; 
+        }
+        .carousel-item:hover img { 
+          transform: scale(1.05); 
+        }
+        .carousel-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.4);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: var(--transition);
+        }
+        .carousel-item:hover .carousel-overlay {
+          opacity: 1;
+        }
+        .quick-view-btn {
+          background: white;
+          color: var(--text);
+          border: none;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition);
+        }
+        .quick-view-btn:hover {
+          background: var(--accent);
+          color: white;
+        }
+        .carousel-gradient-left, .carousel-gradient-right {
+          position: absolute;
+          top: 0;
+          width: 100px;
+          height: 100%;
+          z-index: 2;
+        }
+        .carousel-gradient-left {
+          left: 0;
+          background: linear-gradient(90deg, #F8FAFC 0%, transparent 100%);
+        }
+        .carousel-gradient-right {
+          right: 0;
+          background: linear-gradient(270deg, #F8FAFC 0%, transparent 100%);
+        }
+
+        /* Testimonials */
+        .testimonials { 
+          padding: 80px 0; 
+          background: linear-gradient(135deg,#F8FAFC 0%,#F1F5F9 100%); 
+          position: relative;
+          overflow: hidden;
+        }
+        .testi-wrap { 
+          display:grid; 
+          grid-template-columns: repeat(3, 1fr); 
+          gap: 24px; 
+          margin-top: 40px; 
+        }
+        .testi-card { 
+          background: white; 
+          padding: 32px; 
+          border-radius: var(--border-radius); 
+          box-shadow: var(--shadow); 
+          position: relative;
+          transition: var(--transition);
+        }
+        .testi-card:hover {
+          box-shadow: 0 15px 40px rgba(2,6,23,0.1);
+        }
+        .testi-rating {
+          display: flex;
+          gap: 4px;
+          margin-bottom: 16px;
+        }
+        .testi-icon { 
+          position: absolute; 
+          top: -14px; 
+          right: 16px; 
+          background: var(--accent); 
+          color: white; 
+          width:36px; 
+          height:36px; 
+          border-radius:50%; 
+          display:flex; 
+          align-items:center; 
+          justify-content:center; 
+        }
+        .testi-card p { 
+          font-style: italic; 
+          margin-bottom: 20px; 
+          color: var(--text); 
+          font-size: 1.05rem;
+          line-height: 1.6;
+        }
+        .testi-author { 
+          display:flex; 
+          align-items:center; 
+          gap:12px; 
+        }
+        .testi-avatar { 
+          width:48px; 
+          height:48px; 
+          border-radius:50%; 
+          object-fit:cover; 
+        }
+        .testi-name { 
+          font-weight:700; 
+        }
+        .testi-role { 
+          color: var(--muted); 
+          font-size:0.9rem; 
+        }
+
+        /* CTA */
+        .cta-section { 
+          padding: 80px 0; 
+          background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); 
+          color: white; 
+          text-align:center; 
+          position: relative;
+          overflow: hidden;
+        }
+        .cta-background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+          background-size: 40px 40px;
+          opacity: 0.3;
+        }
+        .cta-content h2 { 
+          font-size: 2.2rem; 
+          margin-bottom:16px; 
+          font-weight:800; 
+        }
+        .cta-content p { 
+          opacity: 0.9; 
+          margin-bottom: 28px; 
+          font-size: 1.1rem;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .cta-buttons { 
+          display:flex; 
+          gap:16px; 
+          justify-content:center; 
+          flex-wrap:wrap; 
+        }
+
+        /* Animations */
+        @keyframes scroll-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); } /* duplicated content */
+        }
+        
+        @keyframes pulse {
+          0% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.05); opacity: 0.8; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes morphing {
+          0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+          25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+          50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+          75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+          100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+        
+        @keyframes scrollLine {
+          0% { height: 0; opacity: 0; }
+          50% { height: 40px; opacity: 1; }
+          100% { height: 0; opacity: 0; transform: translateY(20px); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+          .hero-title { font-size: 2.5rem; }
+          .testi-wrap { grid-template-columns: repeat(2, 1fr); }
+          .carousel-item { width: 280px; height: 200px; }
         }
         @media (max-width: 768px) {
-          .hero-title { 
-            font-size: 2rem; 
-          }
-          .hero {
-            padding: calc(var(--nav-height) + 20px) 0 20px;
-          }
-          .slide { 
-            padding: 18px; 
-            height: 180px;
-          }
-          .slider-viewport {
-            height: 180px;
-          }
-          .slider-btn { 
-            width:32px; 
-            height:32px; 
-          }
-          .slider-btn.prev { left: 10px; }
-          .slider-btn.next { right: 10px; }
-          .slide-icon {
-            padding: 10px;
-          }
-          .slide-title { 
-            font-size: 1.1rem; 
-          }
-          .slide-sub {
-            font-size: 0.9rem;
-          }
-          .slide-desc {
-            font-size: 0.8rem;
-            display: none;
-          }
-          .about-section {
-            padding: 40px 0;
-          }
-          .about-text h2 {
-            font-size: 1.8rem;
-          }
-        }
-        @media (max-width: 640px) {
-          .hero-title { 
-            font-size: 1.75rem; 
-          }
-          .slide { 
-            padding: 16px; 
-            height: 160px;
-            border-radius:12px; 
-          }
-          .slider-viewport {
-            border-radius: 12px;
-            height: 160px;
-          }
-          .slider-btn { 
-            width:30px; 
-            height:30px; 
-          }
-          .slider-dots {
-            gap: 12px;
-          }
-          .dot {
-            width: 40px;
-          }
-          .hero-actions {
-            flex-direction: column;
-            align-items: center;
-          }
-          .slide-title {
-            font-size: 1rem;
-          }
-          .slide-sub {
-            font-size: 0.85rem;
-          }
-          .about-text h2 {
-            font-size: 1.5rem;
-          }
-          .about-text > p {
-            font-size: 1rem;
-          }
+          .hero-title { font-size: 2rem; }
+          .hero-sub { max-width: 100%; }
+          .carousel-item { width: 240px; height: 180px; }
+          .testi-wrap { grid-template-columns: 1fr; }
+          .hero-container { min-height: auto; }
+          .features-grid { grid-template-columns: 1fr; }
+          .hero-ctas, .cta-buttons { justify-content: center; }
+          .trust-indicators { justify-content: center; }
+          .logo-container { width: 220px; height: 220px; }
         }
         @media (max-width: 480px) {
-          .slide {
-            height: 180px;
-          }
-          .slider-viewport {
-            height: 180px;
-          }
-          .slide-title {
-            font-size: 0.95rem;
-          }
-          .slide-sub {
-            font-size: 0.8rem;
-          }
-          .slide-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 10px;
-          }
-          .slide-text-content {
-            text-align: center;
-          }
-          .slide-icon {
-            margin-bottom: 0;
-          }
+          .hero-title { font-size: 1.8rem; }
+          .section-title { font-size: 1.8rem; }
+          .hero-ctas, .cta-buttons { flex-direction: column; width: 100%; }
+          .btn { width: 100%; justify-content: center; }
+          .carousel-item { width: 200px; height: 160px; }
         }
       `}</style>
     </div>
   );
 }
-
-export default Home;

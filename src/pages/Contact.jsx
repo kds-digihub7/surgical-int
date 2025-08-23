@@ -1,5 +1,13 @@
 // src/pages/Contact.jsx
 import React, { useEffect, useState } from "react";
+import {
+  Mail,
+  Phone as PhoneIcon,
+  MapPin,
+  Facebook,
+  Instagram,
+  Linkedin,
+} from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -49,7 +57,7 @@ export default function Contact() {
 
   return (
     <div className="ci-page">
-      {/* Embedded styles (single-file) */}
+      {/* Embedded styles */}
       <style>{`
         :root {
           --bg-1: #ffffff;
@@ -58,16 +66,17 @@ export default function Contact() {
           --muted: #64748b;
           --accent-a: #2563eb;
           --accent-b: #3b82f6;
-          --glass: rgba(255,255,255,0.5);
-          --text: #1e293b;
+          --accent-soft: rgba(37,99,235,0.08);
+          --text: #0f1724;
           --border: #e2e8f0;
+          --glass: rgba(255,255,255,0.6);
         }
 
-        /* Layout */
+        * { box-sizing: border-box; }
         .ci-page {
           min-height: calc(100vh - 0px);
-          padding: 96px 18px 36px;
-          background: var(--bg-2);
+          padding: 88px 18px 36px;
+          background: linear-gradient(180deg, #f7fbff 0%, var(--bg-2) 100%);
           color: var(--text);
           font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
           display: flex;
@@ -79,45 +88,110 @@ export default function Contact() {
           max-width: 1160px;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 30px;
+          gap: 28px;
           align-items: start;
-          animation: pageFade .6s ease both;
+          padding: 12px;
         }
 
-        /* small entrance animation */
-        @keyframes pageFade {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Left column */
-        .ci-left { display:flex; flex-direction:column; gap:14px; }
-        .brand { text-align:center; padding: 22px 8px 8px; opacity: .98; }
-        .brand img { width: 86px; margin: 0 auto 8px; display:block; border-radius: 8px; }
-        .brand h2 { margin: 0; font-size: 18px; letter-spacing: 1px; font-weight:700; color: var(--accent-a); }
-        .brand p { margin: 10px 0 0; color: var(--muted); font-size:13px; }
-
-        /* card base */
+        /* Card base */
         .card {
           background: var(--card-bg);
-          border-radius: 12px;
-          padding: 24px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+          border-radius: 14px;
+          padding: 22px;
+          box-shadow: 0 10px 30px rgba(2,6,23,0.06);
           border: 1px solid var(--border);
           position: relative;
           overflow: hidden;
         }
 
+        /* Left column */
+        .ci-left { display:flex; flex-direction:column; gap:14px; }
+        .brand { text-align:center; padding: 8px 6px 0; opacity: .98; }
+        .brand img { width: 86px; margin: 0 auto 8px; display:block; border-radius: 8px; }
+        .brand h2 { margin: 0; font-size: 18px; letter-spacing: 1px; font-weight:700; color: var(--accent-a); }
+        .brand p { margin: 8px 0 0; color: var(--muted); font-size:13px; }
+
+        .card h3, .card h4 {
+          margin: 0 0 16px 0;
+          color: var(--text);
+          font-weight: 700;
+          position: relative;
+        }
+        .card h3::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -10px;
+          width: 36px;
+          height: 4px;
+          background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+          border-radius: 4px;
+        }
+
+        .info-list p { margin: 10px 0; color: var(--muted); font-size: 14px; line-height:1.45; display:flex; align-items:center; gap:8px; }
+        .info-list a { color: var(--accent-a); text-decoration: none; font-weight: 600; }
+        .info-list a:hover { text-decoration: underline; }
+
+        .map-box {
+          height: 140px;
+          border-radius: 10px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          color: var(--muted); 
+          font-size:13px;
+          border: 1px dashed var(--border);
+          background: linear-gradient(180deg, rgba(59,130,246,0.03), #fff);
+        }
+
+        /* contact methods with icons */
+        .contact-methods { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+        .method {
+          display:flex; gap:12px; align-items:center;
+          background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.75));
+          border-radius: 10px;
+          padding: 10px;
+          border: 1px solid var(--border);
+        }
+        .method .icon {
+          width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+          background: var(--accent-soft); color: var(--accent-a);
+        }
+        .method .meta { display:flex; flex-direction:column; }
+        .method .meta .label { font-size:12px; color:var(--muted); }
+        .method .meta .value { font-weight:700; color:var(--text); font-size:14px; }
+
+        /* socials */
+        .socials { display:flex; gap:10px; margin-top:12px; }
+        .social {
+          width:46px;
+          height:46px;
+          border-radius:10px;
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+          background: linear-gradient(180deg,#fff,#f7fbff);
+          color: var(--muted);
+          text-decoration:none;
+          border: 1px solid var(--border);
+          transition: transform .18s ease, background .18s ease, color .18s ease;
+        }
+        .social svg { width:20px; height:20px; }
+        .social:hover {
+          transform: translateY(-4px);
+          background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+          color: white;
+          box-shadow: 0 8px 24px rgba(37,99,235,0.12);
+        }
+
         /* Right column / form */
         .ci-right { display:flex; flex-direction:column; gap:12px; }
-
         .muted { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
 
-        /* form group */
-        .form-group { position: relative; margin-bottom: 20px; }
+        .form-group { position: relative; margin-bottom: 16px; }
         .form-group input, .form-group textarea {
           width: 100%;
-          background: #f8fafc;
+          background: #fff;
           border: 1px solid var(--border);
           padding: 14px;
           border-radius: 10px;
@@ -131,7 +205,7 @@ export default function Contact() {
 
         .form-group input:focus, .form-group textarea:focus {
           border: 1px solid var(--accent-a);
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          box-shadow: 0 6px 18px rgba(37,99,235,0.09);
         }
 
         .form-group label {
@@ -154,119 +228,42 @@ export default function Contact() {
 
         .form-card h3 { 
           margin-top: 0;
-          margin-bottom: 16px;
+          margin-bottom: 12px;
           color: var(--text);
           font-weight: 700;
-          font-size: 24px;
+          font-size: 22px;
         }
 
-        /* error & success styles */
         .error { color: #dc2626; font-size: 13px; margin-top: 8px; }
         .success { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-size: 14px; }
 
-        /* Send button */
         .btn {
           display:inline-flex; gap:12px; align-items:center; justify-content:center;
-          border: none; padding: 14px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 8px;
+          border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 8px;
           background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
           color: white; 
-          box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+          box-shadow: 0 6px 18px rgba(37, 99, 235, 0.15);
           transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
           position: relative;
-          overflow: hidden;
         }
-        .btn:hover {
-          box-shadow: 0 6px 12px rgba(37, 99, 235, 0.25);
-          transform: translateY(-2px);
-        }
-        .btn:active { transform: translateY(0); }
+        .btn:hover { transform: translateY(-3px); }
         .btn:disabled { opacity: 0.7; cursor: default; transform: none; }
 
-        .btn .arrow {
-          display:inline-block;
-          transform: translateX(6px);
-          transition: transform .28s cubic-bezier(.2,.9,.3,1);
-          font-size: 16px;
-        }
+        .btn .arrow { display:inline-block; transform: translateX(6px); transition: transform .24s cubic-bezier(.2,.9,.3,1); font-size: 14px; }
         .btn.sending .arrow { transform: translateX(0); }
 
-        /* micro pulse when sent */
-        .sentPulse {
-          animation: pulseSent .9s ease;
-          box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-        }
+        .sentPulse { animation: pulseSent .9s ease; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.18); }
         @keyframes pulseSent {
           0% { transform: scale(1); }
           50% { transform: scale(1.02); }
           100% { transform: scale(1); }
         }
 
-        /* staggered entry for left and right */
-        .ci-left, .ci-right { opacity: 0; transform: translateY(8px); animation: enterCol .55s ease forwards; }
-        .ci-left { animation-delay: .08s; }
-        .ci-right { animation-delay: .16s; }
-        @keyframes enterCol { to { opacity: 1; transform: translateY(0); } }
-
-        /* Contact info styles */
-        .info-list p { margin: 12px 0; color: var(--muted); font-size: 14px; line-height:1.45; }
-        .info-list a { color: var(--accent-a); text-decoration: none; font-weight: 500; }
-        .info-list a:hover { text-decoration: underline; }
-
-        .card h3, .card h4 {
-          margin: 0 0 16px 0;
-          color: var(--text);
-          font-weight: 700;
-          position: relative;
-        }
-        .card h3::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: -10px;
-          width: 36px;
-          height: 4px;
-          background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
-          border-radius: 4px;
-        }
-
-        .map-box {
-          height: 130px;
-          border-radius: 8px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          color: var(--muted); 
-          font-size:13px;
-          border: 1px dashed var(--border);
-          background: #f8fafc;
-        }
-
-        .socials { display:flex; gap:10px; margin-top:16px; }
-        .social {
-          width:40px;
-          height:40px;
-          border-radius:8px;
-          display:inline-flex;
-          align-items:center;
-          justify-content:center;
-          background: #f1f5f9; 
-          color: var(--muted); 
-          text-decoration:none; 
-          font-weight:700; 
-          border: 1px solid var(--border);
-          transition: transform .18s ease, background .18s ease, color .18s ease;
-        }
-        .social:hover {
-          transform: translateY(-2px);
-          background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
-          color: white;
-        }
-
-        /* responsive adjustments */
+        /* responsive */
         @media (max-width: 920px) {
           .ci-wrap { grid-template-columns: 1fr; }
           .brand img { width: 70px; }
-          .map-box { height: 100px; }
+          .map-box { height: 110px; }
           .ci-page { padding: 72px 18px 24px; }
         }
       `}</style>
@@ -277,34 +274,63 @@ export default function Contact() {
           <div className="brand">
             <img src="/logo.png" alt="Subhan International" onError={(e) => (e.target.style.display = "none")} />
             <h2>Subhan International</h2>
-            <p>Quality medical & surgical supplies — we're here to help.</p>
+            <p>Quality medical & surgical supplies — here to support healthcare professionals.</p>
           </div>
 
           <div className="card info-card" aria-labelledby="contact-info-heading">
             <h3 id="contact-info-heading">Contact Information</h3>
-            <div className="info-list">
-              <p><strong>Email:</strong> <a href="mailto:info@subhainint.com">info@subhainint.com</a></p>
-              <p><strong>Phone:</strong> <a href="tel:+92123456789">+92-123456789</a></p>
-              <p><strong>Address:</strong> 123 Medical Street, Karachi, Pakistan</p>
+
+            <div className="contact-methods" aria-hidden={false}>
+              <div className="method" aria-label="Email">
+                <div className="icon"><Mail size={18} /></div>
+                <div className="meta">
+                  <div className="label">Email</div>
+                  <div className="value"><a href="mailto:info@subhainint.com">info@subhainint.com</a></div>
+                </div>
+              </div>
+
+              <div className="method" aria-label="Phone">
+                <div className="icon"><PhoneIcon size={18} /></div>
+                <div className="meta">
+                  <div className="label">Phone</div>
+                  <div className="value"><a href="tel:+92123456789">+92-123456789</a></div>
+                </div>
+              </div>
+
+              <div className="method" aria-label="Address">
+                <div className="icon"><MapPin size={18} /></div>
+                <div className="meta">
+                  <div className="label">Address</div>
+                  <div className="value">123 Medical Street, Karachi, Pakistan</div>
+                </div>
+              </div>
             </div>
 
-            <div style={{ marginTop: 16 }}>
-              <h4 style={{ margin: "16px 0 8px" }}>Business Hours</h4>
+            <div style={{ marginTop: 14 }}>
+              <h4 style={{ margin: "10px 0 8px" }}>Business Hours</h4>
               <p style={{ margin: 0 }} className="muted">Mon-Fri: 9:00 AM - 6:00 PM</p>
               <p style={{ margin: 0 }} className="muted">Sat: 10:00 AM - 2:00 PM • Sun: Closed</p>
             </div>
 
-            <div className="socials" aria-hidden>
-              <a className="social" href="#" title="Facebook">FB</a>
-              <a className="social" href="#" title="Instagram">IG</a>
-              <a className="social" href="#" title="LinkedIn">LI</a>
+            <div style={{ marginTop: 14 }}>
+              <h4 style={{ margin: "12px 0 8px" }}>Find Us</h4>
+              <div className="map-box">Map placeholder — ask me to add live Google Map iframe</div>
             </div>
-          </div>
 
-          <div className="card" aria-labelledby="find-us-heading">
-            <h4 id="find-us-heading">Find Us</h4>
-            <div className="map-box">Map placeholder — ask me to add live Google Map iframe</div>
-            <p style={{ marginTop: 8, color: "var(--muted)", fontSize: 13 }}>(I can add a Google Maps iframe if you want.)</p>
+            <div>
+              <h4 style={{ margin: "12px 0 8px" }}>Follow Us</h4>
+              <div className="socials" role="navigation" aria-label="Social links">
+                <a className="social" href="#" title="Facebook" aria-label="Facebook">
+                  <Facebook />
+                </a>
+                <a className="social" href="#" title="Instagram" aria-label="Instagram">
+                  <Instagram />
+                </a>
+                <a className="social" href="#" title="LinkedIn" aria-label="LinkedIn">
+                  <Linkedin />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -360,6 +386,7 @@ export default function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder=" "
+                  rows={6}
                 />
                 <label htmlFor="message">Message</label>
                 {errors.message && <div className="error">{errors.message}</div>}
