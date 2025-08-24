@@ -684,6 +684,7 @@ function Admin() {
           justify-content: space-between;
           align-items: center;
           margin-bottom: 2rem;
+          padding:56px 0;
         }
         
         .admin-actions {

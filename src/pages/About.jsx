@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+
 import { Award, Users, Heart, ArrowRight, Shield, Globe, Target } from "lucide-react";
 
 export default function About() {

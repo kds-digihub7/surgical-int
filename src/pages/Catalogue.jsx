@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Search, Filter, ChevronDown } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 
+
 export default function Catalogue() {
   const [products, setProducts] = useState([]);
   const [query, setQuery] = useState("");
@@ -192,6 +193,7 @@ export default function Catalogue() {
            visually at the same position. */
         .catalogue-head {
           display:flex;
+          padding:56px 0;
           align-items:center;
           justify-content:space-between;
           gap:16px;

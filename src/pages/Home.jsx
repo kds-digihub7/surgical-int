@@ -15,12 +15,12 @@ export default function Home() {
       const saved = JSON.parse(localStorage.getItem("products")) || [];
       const prepared = saved.map((p) => ({
         id: p.id ?? Math.random(),
-        image: p.image || "/logo.png",
+        image: p.image || "/subhanint-logo.png",
         name: p.name || "Product",
       }));
-      setProducts(prepared.length ? prepared : [{ id: 1, image: "/logo.png" }, { id: 2, image: "/logo.png" }, { id: 3, image: "/logo.png" }]);
+      setProducts(prepared.length ? prepared : [{ id: 1, image: "/subhanint-logo.png" }, { id: 2, image: "/subhanint-logo.png" }, { id: 3, image: "/subhanint-logo.png" }]);
     } catch {
-      setProducts([{ id: 1, image: "/logo.png" }, { id: 2, image: "/logo.png" }, { id: 3, image: "/logo.png" }]);
+      setProducts([{ id: 1, image: "/subhanint-logo.png" }, { id: 2, image: "/lsubhanint-logo.png" }, { id: 3, image: "/subhanint-logo.png" }]);
     }
   }, []);
 
@@ -33,7 +33,7 @@ export default function Home() {
     navigate("/catalogue");
   };
 
-  const featuredImages = products.length ? products.map((p) => p.image) : ["/logo.png", "/logo.png", "/logo.png"];
+  const featuredImages = products.length ? products.map((p) => p.image) : ["/subhanint-logo.png", "/subhanint-logo.png", "/subhanint-logo.png"];
   const duplicatedImages = [...featuredImages, ...featuredImages];
 
   const testimonials = [
@@ -151,7 +151,7 @@ export default function Home() {
           >
             <div className="logo-container">
               <div className="logo-glow"></div>
-              <img src="/logo.png" alt="Subhan International" className="hero-logo" />
+              <img src="/subhanint-logo.png" alt="Subhan International" className="hero-logo" />
             </div>
           </motion.div>
         </div>
