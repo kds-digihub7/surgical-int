@@ -273,7 +273,7 @@ export default function Contact() {
         {/* LEFT */}
         <div className="ci-left">
           <div className="brand">
-            <img src="/logo.png" alt="Subhan International" onError={(e) => (e.target.style.display = "none")} />
+            <img src="/subhanint-logo.png" alt="Subhan International" onError={(e) => (e.target.style.display = "none")} />
             <h2>Subhan International</h2>
             <p>Quality medical & surgical supplies — here to support healthcare professionals.</p>
           </div>

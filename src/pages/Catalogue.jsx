@@ -184,8 +184,6 @@ export default function Catalogue() {
         .container{
           max-width:1160px;
           margin:0 auto;
-          padding:24px;
-          padding-top: 24px; /* keep small spacing but NOT nav-height here */
         }
 
         /* Push the header down so it sits below the fixed top bar,
